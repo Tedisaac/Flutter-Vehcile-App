@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:simpleapp/models/tokenInfo.dart';
 import 'package:simpleapp/pages/vehiclespage.dart';
+import 'package:simpleapp/services/api_manager.dart';
 //import 'package:path/path.dart' as Path;
 
 
@@ -14,7 +16,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-Widget buildEmail() {
+Widget buildEmail(TextEditingController _controllerEmail) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget> [
@@ -42,6 +44,7 @@ Widget buildEmail() {
         ),
         height: 60,
         child: TextField(
+          controller: _controllerEmail,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
             color: Colors.black87,
@@ -65,7 +68,7 @@ Widget buildEmail() {
 
 }
 
-Widget buildPassword() {
+Widget buildPassword(TextEditingController _controllerPassword) {
   return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget> [
@@ -93,6 +96,7 @@ Widget buildPassword() {
           ),
           height: 60,
           child: TextField(
+            controller: _controllerPassword,
             obscureText: true,
             style: TextStyle(
               color: Colors.black87,
@@ -104,7 +108,7 @@ Widget buildPassword() {
                   Icons.lock,
                   color: Colors.black,
                 ),
-                hintText: 'Passwords',
+                hintText: 'Password',
                 hintStyle: TextStyle(
                   color: Colors.black38,
                 )
@@ -116,14 +120,18 @@ Widget buildPassword() {
 
 }
 
-Widget buildLoginButton(BuildContext context){
+Widget buildLoginButton(BuildContext context,TextEditingController _controllerEmail,TextEditingController _controllerPassword){
   return Container(
     padding: EdgeInsets.symmetric(
       vertical: 25
     ),
     width: double.infinity,
     child: ElevatedButton(
-      onPressed: () { 
+      onPressed: (){
+        var email = _controllerEmail.text;
+        var password = _controllerPassword.text;
+        print("email: " + email + "password: " + password);
+        // _tokenInfo = API_Manager().sendCredentials(_controllerEmail.text, secret);
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => VehiclePage()),
         );
@@ -142,6 +150,10 @@ Widget buildLoginButton(BuildContext context){
 
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerPassword = TextEditingController();
+  Future<TokenInfo>? _tokenInfo;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,10 +195,10 @@ class _LoginPageState extends State<LoginPage> {
                          ),
                        ),
                        SizedBox(height: 50),
-                       buildEmail(),
+                       buildEmail(_controllerEmail),
                        SizedBox(height: 20),
-                       buildPassword(),
-                       buildLoginButton(context),
+                       buildPassword(_controllerPassword),
+                       buildLoginButton(context,_controllerEmail,_controllerPassword),
                      ],
                    ),
                  ),
